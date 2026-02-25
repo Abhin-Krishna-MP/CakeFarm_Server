@@ -7,10 +7,9 @@ dotenv.config({
   path: "./.env",
 });
 
-const port = process.env.PORT || 6005;
 const startServer = () => {
-  httpServer.listen(port, '0.0.0.0', () => {
-    console.log("⚙️  Server is running on port: " + port);
+  httpServer.listen(process.env.PORT,'0.0.0.0', () => {
+    console.log("⚙️  Server is running on port: " + process.env.PORT);
   });
 };
 

@@ -113,7 +113,7 @@ router.get(
 // Logout
 router.get("/logout", (req, res) => {
   req.logout(() => {
-    res.redirect("http://localhost:5173");
+    res.redirect(FRONTEND);
   });
 });
 

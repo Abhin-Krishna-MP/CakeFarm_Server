@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
 
 // Make io accessible to controllers
 app.set("io", io);
-app.set("trust proxy", 1);
+
 // global middlewares
 app.use(
   cors({
