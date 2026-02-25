@@ -14,6 +14,7 @@ import { dirname } from "path";
 import { errorHandler } from "./middlewares/error.middlewares.js";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import passport from "./config/passport.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -64,15 +65,22 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// Session configuration
+// Session configuration — use MongoDB-backed store in production to avoid
+// memory leaks and to support multiple processes / restarts on Hostinger.
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      collectionName: "sessions",
+      ttl: 24 * 60 * 60, // 24 hours in seconds
+    }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours in ms
     },
   })
 );
